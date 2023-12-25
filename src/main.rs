@@ -1,3 +1,4 @@
+
 #[macro_use] extern crate rocket;
 use rocket::serde::json::Json;
 use rocket::http::Status;
@@ -5,6 +6,8 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::Mutex;
 use rocket::State;
+pub use alphe::validate_name;
+
 
 type Database = Mutex<HashMap<String, Person>>;
  
@@ -15,10 +18,12 @@ struct Person {
     email: String,
 }
 
+#[validate_name]
 #[post("/", format = "json", data = "<person>")]
 fn create_person(person: Json<Person>, db: &State<Database>) -> Status {
     let mut database = db.lock().expect("database lock");
     database.insert(person.email.clone(), person.into_inner());
+    println!("{:?}", database);
     Status::Created
 }
 
