@@ -15,7 +15,10 @@ pub fn validate_name(_attr: TokenStream, item: TokenStream) -> TokenStream {
         let mut person_clone = person.clone();
         let person = person_clone.into_inner();
         if person.name.len() < 5 {
-            return rocket::http::Status::BadRequest;
+            return Err(rocket::response::status::Custom(
+                rocket::http::Status::BadRequest,
+                rocket::serde::json::Json(String::from("Name must be at least 5 characters long")),
+            ));
         }
         let person = rocket::serde::json::Json(person);
     });
@@ -40,7 +43,12 @@ pub fn validate_lastname(_attr: TokenStream, item: TokenStream) -> TokenStream {
         let mut person_clone = person.clone();
         let person = person_clone.into_inner();
         if person.lastname.len() < 5 {
-            return rocket::http::Status::BadRequest;
+            return Err(rocket::response::status::Custom(
+                rocket::http::Status::BadRequest,
+                rocket::serde::json::Json(String::from(
+                    "Lastname must be at least 5 characters long",
+                )),
+            ));
         }
         let person = rocket::serde::json::Json(person);
     });
@@ -65,7 +73,10 @@ pub fn validate_email(_attr: TokenStream, item: TokenStream) -> TokenStream {
         let mut person_clone = person.clone();
         let person = person_clone.into_inner();
         if !person.email.contains("@") {
-            return rocket::http::Status::BadRequest;
+            return Err(rocket::response::status::Custom(
+                rocket::http::Status::BadRequest,
+                rocket::serde::json::Json(String::from("Email must contain @")),
+            ));
         }
         let person = rocket::serde::json::Json(person);
     });
@@ -127,7 +138,6 @@ pub fn add_updated_at_field(_attr: TokenStream, item: TokenStream) -> TokenStrea
     let validation: Block = syn::parse_quote!({
         person.updated_at = Some(String::from("2021-09-01"));
     });
-
 
     // Prepend the validation logic to the original function body
     let original_body = function.block;

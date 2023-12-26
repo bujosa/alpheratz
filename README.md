@@ -1,4 +1,4 @@
-# alpheratz
+# alpheratz (Attribute Macros)
 This repository implements JSON interceptors in Rust using Macros. One of the key features is the `validate_name` macro.
 
 ## Macros
@@ -52,5 +52,11 @@ Here's a brief overview of the steps to create a procedural macro:
 ## Documentation
 
 - [Procedural Macros](https://doc.rust-lang.org/reference/procedural-macros.html)
-- [Attribute Macros](https://doc.rust-lang.org/reference/procedural-macros.html#attribute-macros)
+- [Attribute Macros](https://doc.rust-lang.org/reference/procedural-macros.html#attribute-macros): These are used to apply metadata to some Rust construct. Here's an example:
+    ```rust
+    #[test]
+    fn it_works() {
+        assert_eq!(2 + 2, 4);
+    }
+    ```
 - [The little book of Rust Macros](https://veykril.github.io/tlborm/introduction.html)

@@ -7,6 +7,11 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::Mutex;
 
+macro_rules! hello {
+    ($name:expr) => {
+        format!("Hello, {}!", $name)
+    };
+}
 
 type CustomResponse = Result<rocket::response::status::Custom<Json<String>>, rocket::response::status::Custom<Json<Vec<String>>>>;
 
@@ -24,8 +29,12 @@ struct Person {
 #[post("/", format = "json", data = "<person>")]
 fn create_person(person: Json<Person>, db: &State<Database>) -> CustomResponse {
     let mut database = db.lock().expect("database lock");
+    // Example of using macro rules
+    let s = hello!(person.name.clone());
+    println!("{}", s);
+
+    // Insert person into database
     database.insert(person.email.clone(), person.into_inner());
-    println!("{:?}", database);
     Ok(rocket::response::status::Custom(
         rocket::http::Status::Created,
         Json(String::from("Person created"))
